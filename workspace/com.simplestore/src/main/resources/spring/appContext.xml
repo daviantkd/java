@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
+
+	<bean id="categoryController" class="com.simplestore.controller.CategoryController">
+		<property name="categoryService" ref="categoryService" />
+	</bean>
+
+	<bean id="productController" class="com.simplestore.controller.ProductController">
+		<property name="categoryService" ref="categoryService" />
+		<property name="productService" ref="productService" />
+	</bean>
+
+	<bean id="categoryService" class="com.simplestore.service.CategoryServiceImp">
+		<property name="categoryDao" ref="categoryDao" />
+	</bean>
+
+	<bean id="productService" class="com.simplestore.service.ProductServiceImp">
+		<property name="productDao" ref="productDao" />
+	</bean>
+
+	<bean id="categoryDao" class="com.simplestore.dao.CategoryDaoImp">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<bean id="productDao" class="com.simplestore.dao.ProductDaoImp">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<aop:config>
+		<aop:pointcut expression="execution(* com.simplestore.service.*.*(..))"
+			id="servicePointcut" />
+		<aop:advisor advice-ref="txManagerAdvice" pointcut-ref="servicePointcut" />
+	</aop:config>
+
+	<tx:advice id="txManagerAdvice" transaction-manager="txManager">
+		<tx:attributes>
+			<tx:method name="get*" read-only="true" />
+			<tx:method name="*" />
+		</tx:attributes>
+	</tx:advice>
+
+	<bean id="txManager"
+		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<import resource="hibernate.xml" />
+</beans>

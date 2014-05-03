@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated May 3, 2014 4:48:16 PM by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+	<class name="com.simplestore.domain.Product" table="PRODUCT">
+		<id name="productId" type="int">
+			<column name="PRODUCTID" />
+			<generator class="native" />
+		</id>
+		<property name="productName" type="java.lang.String">
+			<column name="PRODUCTNAME" not-null="true" />
+		</property>
+		<property name="flag" type="boolean">
+			<column name="FLAG" not-null="true" />
+		</property>
+		<many-to-one name="category" class="com.simplestore.domain.Category"
+			lazy="false" fetch="select">
+			<column name="CATEGORYID" not-null="true" />
+		</many-to-one>
+	</class>
+</hibernate-mapping>
